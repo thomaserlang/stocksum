@@ -1,0 +1,22 @@
+{% extends "main.html" %}
+{% block body %}
+    <div class="row">
+        <div class="col-xs-3">
+            {% module portfolios_menu() %}
+        </div>
+        <div class="col-xs-9">
+            {% if portfolio %}
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="pull-right">
+                        <a href="/portfolio-edit-crontab?id={{ portfolio.id }}" class="btn btn-info">Edit triggers</a>
+                        <a href="/portfolio-edit-transactions?id={{ portfolio.id }}" class="btn btn-info">Edit transactions</a>
+                        <a href="/portfolio-delete?id={{ portfolio.id }}" class="btn btn-danger">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            {% end %}
+            <p>THE transactions!!!</p>
+        </div>
+    </div>
+{% end %}

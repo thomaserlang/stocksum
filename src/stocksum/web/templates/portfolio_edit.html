@@ -1,0 +1,66 @@
+{% extends "main.html" %}
+{% block body %}
+    <div class="row">
+        <div class="col-xs-3">
+            {% module portfolios_menu() %}
+        </div>
+        <div class="col-xs-9">
+            <h1>transactions</h1>
+            <form id="form-portfolio-transactions">
+                {% raw xsrf_form_html() %}
+                <input type="hidden" name="id" value="{{ portfolio.id }}">
+                <table id="portfolio-transactions" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Trade date</th>
+                            <th>Shares</th>
+                            <th>Price paid</th>
+                            <th width="64px">{% if transactions %}Delete{% end %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i, transaction in enumerate(transactions) %}
+                            <tr>
+                                <td><input type="hidden" name="index" value="{{ i }}"><input class="form-control" type="text" name="symbol" value="
+                                    {{ '{}:'.format(escape(transaction.exchange)) if transaction.exchange else '' }}
+                                    {{ escape(transaction.symbol) }}"></td>
+                                <td><input class="form-control" type="text" name="trade_date" value="{{ transaction.trade_date.strftime('%Y-%m-%d') }}"></td>
+                                <td><input class="form-control" type="text" name="shares" value="{{ transaction.shares }}"></td>
+                                <td><input class="form-control" type="text" name="paid_price" value="{{ transaction.paid_price }}"></td>
+                                <td style="text-align:center;"><input type="checkbox" name="delete-{{ i }}" value="true"></td>
+                            </tr>
+                        {% end %}
+                        {% if not transactions %}
+                            <tr class="no-transactions"><td colspan="6" style="text-align:center;">
+                                No transactions to show.<br>Please add some below!
+                            </td></tr>
+                        {% end %}
+
+                    </tbody>
+                </table>
+                <div class="pull-right">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+            <form id="form-portfolio-add-transaction">
+                <table class="table" style="border:none;">
+                    <thead>
+                        <tr>
+                            <th colspan="5">Add transaction data</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input class="form-control abc" type="text" name="symbol" placeholder="Symbol" /></td>
+                            <td><input class="form-control" type="text" name="trade_date" placeholder="Date (yyyy-mm-dd)"></td>
+                            <td><input class="form-control" type="text" name="shares" placeholder="Shares"></td>
+                            <td><input class="form-control" type="text" name="paid_price" placeholder="Price paid (xx.yy)"></td>
+                            <td><button type="submit" class="btn btn-default">Add</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+{% end %}

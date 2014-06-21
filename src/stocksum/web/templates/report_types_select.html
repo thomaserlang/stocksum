@@ -1,0 +1,5 @@
+<select name="report_type_id" class="form-control">
+    {% for type_ in report_types %}
+        <option value="{{ type_.id }}">{{ escape(type_.name) }}</option>
+    {% end %}
+</select>

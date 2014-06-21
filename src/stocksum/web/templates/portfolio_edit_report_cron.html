@@ -1,0 +1,104 @@
+{% extends "main.html" %}
+
+{% block body %}
+    {% include crontab_creator.html %}
+    <div class="row">
+        <div class="col-xs-3">
+            {% module portfolios_menu() %}
+        </div>
+        <div class="col-xs-9">
+            <h1>Report triggers</h1>
+            <form id="form-portfolio-crontab">
+                {% raw xsrf_form_html() %}
+                <input type="hidden" name="id" value="{{ portfolio_id }}">
+                <table id="portfolio-crontab" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th width="150px">Type</th>
+                            <th colspan="2">Cron</th>
+                            <th width="150px">Latest run</th>
+                            <th width="150px">Next run</th>
+                            <th width="100px">Send email</th>
+                            <th width="64px">Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cron in crontab %}
+                            <tr>
+                                <td>
+                                    <input type="hidden" name="cron_id" value="{{ cron.id }}">
+                                    <select name="report_type_id" class="form-control">
+                                        {% for type_ in report_types %}
+                                            <option value="{{ type_.id }}" {{ 'selected' if cron.report_type_id == type_.id else '' }}>{{ escape(type_.name) }}</option>
+                                        {% end %}
+                                    </select>
+                                </td>
+                                <td>
+                                    <input name="cron" class="form-control" value="{{ escape(cron.cron) }}">
+                                </td>
+                                <td width="56px">
+                                    <a class="btn btn-default" data-toggle="modal" data-target="#cron-creator">
+                                        <i class="glyphicon glyphicon-info-sign"></i>
+                                    </a>
+                                </td>
+                                <td style="vertical-align:middle;">
+                                    <time title="{{ cron.latest_run.isoformat()+'Z' if cron.latest_run else '' }}">
+                                        {{ user_time(cron.latest_run).strftime('%Y-%m-%d %H:%M') if cron.latest_run else '<i>Never</i>' }}
+                                    </time>
+                                </td>
+                                <td style="vertical-align:middle;">
+                                    <time title="{{ cron.next_run.isoformat()+'Z' if cron.next_run else '' }}">
+                                        {{ user_time(cron.next_run).strftime('%Y-%m-%d %H:%M') if cron.next_run else '<i>Never</i>' }}
+                                    </time>
+                                </td>
+                                <td style="vertical-align:middle;text-align:center;"><input type="checkbox" name="send-email-{{ cron.id }}" value="true" {{ 'checked' if cron.send_email else '' }}></td>
+                                <td style="vertical-align:middle;text-align:center;"><input type="checkbox" name="delete-{{ cron.id }}" value="true"></td>
+                            </tr>
+                        {% end %}
+                        {% if not crontab %}
+                            <tr class="no-crontab"><td colspan="5" style="text-align:center;">
+                                No triggers to show.<br>Please add some below!
+                            </td></tr>
+                        {% end %}
+                    </tbody>
+                </table>
+                <div class="pull-right">
+                    <button class="btn btn-primary">Save</button>
+                </div>
+            </form>
+            <form id="form-portfolio-add-cron">
+                {% raw xsrf_form_html() %}
+                <input type="hidden" name="id" value="{{ portfolio_id }}">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>New trigger</th>
+                            <th colspan="2">Cron</th>
+                            <th>Send email</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <select name="report_type_id" class="form-control">
+                                    {% for type_ in report_types %}
+                                        <option value="{{ type_.id }}">{{ escape(type_.name) }}</option>
+                                    {% end %}
+                                </select>
+                            </td>
+                            <td><input type="text" name="cron" class="form-control"></td>
+                            <td width="56px">
+                                <a class="btn btn-default" data-toggle="modal" data-target="#cron-creator">
+                                    <i class="glyphicon glyphicon-info-sign"></i>
+                                </a>
+                            </td>
+                            <td width="100px" style="vertical-align:middle;text-align:center;"><input type="checkbox" name="send-email" value="true" checked></td>
+                            <td style="text-align:right;" width="114px"><button class="btn btn-default" type="submit">Add trigger</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+{% end %}

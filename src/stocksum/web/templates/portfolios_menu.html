@@ -1,0 +1,17 @@
+<form method="POST" id="form-new-portfolio" style="margin-top:10px;">
+    {% raw xsrf_form_html() %}
+    <input id="inp-new-portfolio-name" name="name" value="change_me" type="hidden">
+    <button type="submit" class="btn btn-primary">
+        New portfolio
+    </button>
+</form>
+<ul class="nav nav-pills nav-stacked" style="margin-top:15px;">
+    {% set port_id = int(handler.get_argument('id', -1)) %}
+    {% for p in portfolios %}
+        <li>
+            <a href="/portfolios?id={{ p.id }}" class="{% if p.id == port_id %}active{% end %}">
+                {{ escape(p.name) }}
+            </a>
+        </li>
+    {% end %}
+</ul>

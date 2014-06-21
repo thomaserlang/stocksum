@@ -1,0 +1,117 @@
+<script type="text/javascript">
+    $(function(){
+        var invoker = null;
+        $('#cron-creator').on('shown.bs.modal', function(e) {
+            $('.cron-creator-item').prop('selectedIndex',0);
+            $('#cron-creator-cron').val('* * * * *');
+            invoker = $(e.relatedTarget);
+        })
+        $('.cron-creator-item').change(function(){
+            var cron = [];
+            if ($(this).find('option:selected:first').val() === 'every') {
+                $(this).prop('selectedIndex', 0);
+            }
+            var index = 0;
+            $('.cron-creator-item').each(function(){
+                var option_all = $(this).find('option:selected').map(function () {
+                    var val = $(this).val();
+                    return val;
+                }).get().join(',');
+                if (option_all === 'every') {
+                    cron.push('*')
+                } else {
+                    cron.push(option_all);
+                }
+            });
+            $('#cron-creator-cron').val(cron.join(' '));
+        });
+        $('#cron-creator-modal-ok').click(function(){
+            console.log('asd');
+            $(invoker).parent().parent().find('input[name="cron"]').val(
+                $('#cron-creator-cron').val()
+            );
+            $('#cron-creator').modal('hide');
+        });
+    });
+</script>
+<div class="modal fade" id="cron-creator" tabindex="-1" role="dialog" aria-labelledby="Crontab-creator" aria-hidden="true" style="width:">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Cron creator</h4>
+      </div>
+      <div class="modal-body">
+        <form>
+            <table style="width:100%;">
+                <tbody>
+                <tr>
+                    <td style="padding:5px;">
+                        <p><strong>Minute:</strong></p>
+                        <select style="height:175px;" name="minute" class="form-control cron-creator-item" multiple>
+                            <option value="every" selected>Every</option>
+                            {% for i in range(0, 60) %}
+                                <option value="{{ i }}">{{ i }}</option>
+                            {% end %}
+                        </select>
+                    </td>
+                    <td style="padding:5px;">
+                        <p><strong>Hour:</strong></p>
+                        <select style="height:175px;" name="hour" class="form-control cron-creator-item" multiple>
+                            <option value="every" selected>Every</option>
+                            {% for i in range(0, 24) %}
+                                <option value="{{ i }}">{{ i }}</option>
+                            {% end %}
+                        </select>
+                    </td>
+                    <td style="padding:5px;">
+                        <p><strong>Day:</strong></p>
+                        <select style="height:175px;" name="day" class="form-control cron-creator-item" multiple>
+                            <option value="every" selected>Every</option>
+                            {% for i in range(1, 32) %}
+                                <option value="{{ i }}">{{ i }}</option>
+                            {% end %}
+                        </select>
+                    </td>
+                    <td style="padding:5px;">
+                        <p><strong>Month:</strong></p>
+                        <select style="height:175px;" name="month" class="form-control cron-creator-item" multiple>
+                            <option value="every" selected>Every</option>
+                            {% for i in range(1, 13) %}
+                                <option value="{{ i }}">{{ i }}</option>
+                            {% end %}
+                        </select>
+                    </td>
+                    <td style="padding:5px;">
+                        <p><strong>Weekday:</strong></p>
+                        <select style="height:175px;" name="weekday" class="form-control cron-creator-item" multiple>
+                            <option value="every" selected>Every</option>
+                            <option value="1">Monday</option>
+                            <option value="2">Tuesday</option>
+                            <option value="3">Wednesday</option>
+                            <option value="4">Thursday</option>
+                            <option value="5">Friday</option>
+                            <option value="6">Saturday</option>
+                            <option value="0">Sunday</option>
+                        </select>
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="5">Cron:</th>
+                    </tr>
+                    <tr>
+                        <td colspan="5"><input class="form-control" id="cron-creator-cron" value="" type="text"></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="cron-creator-modal-ok">OK</button>
+      </div>
+    </div>
+  </div>
+</div>

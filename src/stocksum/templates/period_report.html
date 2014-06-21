@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Daily report</title>
+        <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+        {% set curr = portfolio['default_currency'] %}
+        <h1>
+            {{ period_name }}: {{ curr }} {{ fm(portfolio['period_gain'], portfolio['period_gain_percent']) }}
+        </h1>
+        <p>Generated at: <time title="{{ portfolio['generated'].isoformat() }}Z">{{ user_time(user, portfolio['generated']).strftime('%Y-%m-%d %H:%M') }}</time></p>
+        <table class="table table-hover">
+            <thead>
+                <th style="text-align:left;">Symbol</th>
+                <th style="text-align:right;">Last price</th>
+                <th style="text-align:right;">Change</th>
+                <th style="text-align:right;">Shares</th>
+                <th style="text-align:right;">Bought at</th>
+                <th style="text-align:right;">Cost</th>
+                <th style="text-align:right;">Value</th>
+                <th style="text-align:right;">Gain</th>
+                <th style="text-align:right;">{{ period_name }}</th>
+            </thead>
+            <tbody>
+                {% for symbol in sorted_symbols %}
+                    <tr>
+                        {% set transaction = portfolio['transactions'][symbol] %}
+                        <td>{{ symbol }}</td>
+                        <td align="right">{{ fm(transaction['price'], add_color=False) }}</td>
+                        <td align="right">{{ fm(transaction['change'], transaction['change_percent']) }}</td>
+                        <td align="right">{{ transaction['shares'] }}</td>
+                        <td align="right">{{ fm(transaction['paid_price'], add_color=False) }}</td>
+                        <td align="right">{{ fm(transaction['cost'], add_color=False) }}</td>
+                        <td align="right">{{ fm(transaction['value'], add_color=False) }}</td>
+                        <td align="right">{{ fm(transaction['gain'], transaction['gain_percent']) }}</td>
+                        <td align="right">{{ fm(transaction['period_gain'], transaction['period_gain_percent']) }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td align="left"></td>
+                    <td align="right"></td>
+                    <td align="right">{{ fm(portfolio['change'], portfolio['change_percent']) }}</td>
+                    <td align="right"></td>
+                    <td align="right"></td>
+                    <td align="right">{{ curr }} {{ fm(portfolio['cost'], add_color=False) }}</td>
+                    <td align="right">{{ curr }} {{ fm(portfolio['value'], add_color=False) }}</td>
+                    <td align="right">{{ curr }} {{ fm(portfolio['gain'], portfolio['gain_percent']) }}</td>
+                    <td align="right">{{ curr }} {{ fm(portfolio['period_gain'], portfolio['period_gain_percent']) }}</td>
+                </tr>
+            </tfoot>
+        </table>
+        <center>
+            {% for image in images %}
+                <hr>
+                {{ '<img src="data:image/png;base64,{0}">'.format(base64(image.getvalue()).decode('ascii')) }}
+            {% endfor %}
+        </center>
+    </body>
+</html>
