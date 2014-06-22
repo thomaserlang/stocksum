@@ -43,7 +43,7 @@ def load(path=None):
         '~/stocksum.yaml',
     ]
     if not path:
-        path = os.environ.get('STOCKSUM_CONFIG', None)
+        path = os.environ.get('stocksum_CONFIG', None)
         if not path:
             for p in default_paths:
                 p = os.path.expanduser(p)
