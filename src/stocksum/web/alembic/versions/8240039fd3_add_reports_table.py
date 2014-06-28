@@ -12,8 +12,7 @@ down_revision = '1c9398290e4'
 
 from alembic import op
 import sqlalchemy as sa
-from stocksum.web import models
-from stocksum.web.decorators import new_session
+from sqlalchemy.sql import table, column
 
 
 def upgrade():
@@ -24,15 +23,20 @@ def upgrade():
         sa.Column('description', sa.Text),
         sa.Column('symbol', sa.String(40), unique=True),
     )
-
-    with new_session() as session:
-        report_type = models.Report_type(
-            name='Daily',
-            description='Generates a report containing your gains/losses for the day.',
-            symbol='daily'
-        )
-        session.add(report_type)
-        session.commit()
+    report_types = table('report_types',
+        column('id', sa.Integer),
+        column('name', sa.String(60)),
+        column('description', sa.Text),
+        column('symbol', sa.String(40))
+    )
+    op.bulk_insert(report_types, [
+        {
+            'id': 1,
+            'name': 'Daily',
+            'description': 'Generates a report containing your gains/losses for the day.',
+            'symbol': 'daily',
+        }
+    ])
 
     op.create_table(
         'reports',

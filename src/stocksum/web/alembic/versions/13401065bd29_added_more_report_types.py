@@ -12,44 +12,42 @@ down_revision = 'aaef03da98'
 
 from alembic import op
 import sqlalchemy as sa
-from stocksum.web import models
-from stocksum.web.decorators import new_session
+from sqlalchemy.sql import table, column
 
 
 def upgrade():
-    with new_session() as session:
-        report_type = models.Report_type(
+    report_types = table('report_types',
+        column('id', sa.Integer),
+        column('name', sa.String(60)),
+        column('description', sa.Text),
+        column('symbol', sa.String(40))
+    )
+    op.bulk_insert(report_types, [
+        dict(
+            id=2,
             name='1 week',
             description='Generates a report containing your gains/losses for the latest week.',
             symbol='1-week'
-        )
-        session.add(report_type)
-        report_type = models.Report_type(
-            name='1 month',
-            description='Generates a report containing your gains/losses for the latest month.',
-            symbol='1-month'
-        )
-        session.add(report_type)
-        report_type = models.Report_type(
+        ),
+        dict(
+            id=3,
             name='3 months',
             description='Generates a report containing your gains/losses for the latest 3 months.',
             symbol='3-months'
-        )
-        session.add(report_type)
-        report_type = models.Report_type(
+        ),
+        dict(
+            id=4,
             name='6 months',
             description='Generates a report containing your gains/losses for the latest 6 months.',
             symbol='6-months'
-        )
-        session.add(report_type)
-        report_type = models.Report_type(
+        ),
+        dict(
+            id=5,
             name='1 year',
             description='Generates a report containing your gains/losses for the latest year.',
             symbol='1-year'
-        )
-        session.add(report_type)
-        session.commit()
-
+        ),
+    ])
 
 def downgrade():
     raise NotImplemented()
