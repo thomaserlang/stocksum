@@ -24,7 +24,7 @@ def upgrade():
     )
     op.bulk_insert(report_types, [
         dict(
-        	id=
+        	id=6,
             name='Year to date',
             description='Generates a report containing your gains/losses for the year to date.',
             symbol='ytd',
