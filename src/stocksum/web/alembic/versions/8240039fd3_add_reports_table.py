@@ -39,6 +39,18 @@ def upgrade():
     ])
 
     op.create_table(
+        'report_crontab',
+        sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
+        sa.Column('portfolio_id', sa.Integer, sa.ForeignKey('portfolios.id', onupdate='cascade', ondelete='cascade')),
+        sa.Column('report_type_id', sa.Integer, sa.ForeignKey('report_types.id', onupdate='cascade', ondelete='cascade')),
+        sa.Column('cron', sa.String(300)),
+        sa.Column('next_run', sa.DateTime),
+        sa.Column('latest_run', sa.DateTime),
+        sa.Column('latest_error', sa.Text),
+        sa.Column('send_email', sa.Boolean),
+    )
+
+    op.create_table(
         'reports',
         sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
         sa.Column('portfolio_id', sa.Integer, sa.ForeignKey('portfolios.id', onupdate='cascade', ondelete='cascade')),
@@ -53,18 +65,6 @@ def upgrade():
         sa.Column('portfolio_id', sa.Integer, sa.ForeignKey('portfolios.id', onupdate='cascade', ondelete='cascade'), primary_key=True),
         sa.Column('report_type_id', sa.Integer, sa.ForeignKey('report_types.id', onupdate='cascade', ondelete='cascade'), primary_key=True),
         sa.Column('report_id', sa.Integer, sa.ForeignKey('reports.id', onupdate='cascade', ondelete='set null')),
-    )
-
-    op.create_table(
-        'report_crontab',
-        sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
-        sa.Column('portfolio_id', sa.Integer, sa.ForeignKey('portfolios.id', onupdate='cascade', ondelete='cascade')),
-        sa.Column('report_type_id', sa.Integer, sa.ForeignKey('report_types.id', onupdate='cascade', ondelete='cascade')),
-        sa.Column('cron', sa.String(300)),
-        sa.Column('next_run', sa.DateTime),
-        sa.Column('latest_run', sa.DateTime),
-        sa.Column('latest_error', sa.Text),
-        sa.Column('send_email', sa.Boolean),
     )
 
 def downgrade():
