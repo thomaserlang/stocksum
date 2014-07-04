@@ -8,6 +8,7 @@ import handlers.portfolios
 import handlers.settings
 import modules.portfolios_menu
 import modules.portfolio_buttons
+import click
 from tornado import web
 from tornado.web import URLSpec
 from stocksum.config import config
@@ -58,10 +59,12 @@ class Application(web.Application):
         engine = create_engine(config['database']['url'], echo=False)
         web.Application.__init__(self, urls, **settings)
 
-def main():
-    Logger.set_logger('web.log')
+@click.command()
+@click.option('--port', default=config['web']['port'], help='web port')
+def main(port):
+    Logger.set_logger('web-{}.log'.format(port))
     http_server = tornado.httpserver.HTTPServer(Application())
-    http_server.listen(config['web']['port'])
+    http_server.listen(port)
     tornado.ioloop.IOLoop.instance().start()
 
 if __name__ == '__main__':
