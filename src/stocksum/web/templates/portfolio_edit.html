@@ -5,7 +5,7 @@
             {% module portfolios_menu() %}
         </div>
         <div class="col-xs-9">
-            <h1>transactions</h1>
+            {% module portfolio_buttons(portfolio.id) %}
             <form id="form-portfolio-transactions">
                 {% raw xsrf_form_html() %}
                 <input type="hidden" name="id" value="{{ portfolio.id }}">

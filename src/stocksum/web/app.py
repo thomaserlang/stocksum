@@ -1,5 +1,3 @@
-from tornado import web
-from tornado.web import URLSpec
 import tornado.httpserver
 import tornado.ioloop
 import tornado.options
@@ -9,6 +7,9 @@ import handlers.signin
 import handlers.portfolios
 import handlers.settings
 import modules.portfolios_menu
+import modules.portfolio_buttons
+from tornado import web
+from tornado.web import URLSpec
 from stocksum.config import config
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -28,7 +29,8 @@ class Application(web.Application):
             cookie_secret=config['web']['cookie_secret'],
             login_url='/signin',
             ui_modules=dict(
-                portfolios_menu=modules.portfolios_menu.Module
+                portfolios_menu=modules.portfolios_menu.Module,
+                portfolio_buttons=modules.portfolio_buttons.Module,
             ),
             google_oauth=dict(
                 key=config['web']['google_oauth']['client_id'],
