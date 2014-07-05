@@ -8,7 +8,7 @@ import handlers.portfolios
 import handlers.settings
 import modules.portfolios_menu
 import modules.portfolio_buttons
-import click
+import argparse
 from tornado import web
 from tornado.web import URLSpec
 from stocksum.config import config
@@ -56,15 +56,21 @@ class Application(web.Application):
             URLSpec(r'/reports/(.*)', web.StaticFileHandler, {'path': config['report']['path']}),
 
         ]
-        engine = create_engine(config['database']['url'], echo=False)
         web.Application.__init__(self, urls, **settings)
 
-@click.command()
-@click.option('--port', default=config['web']['port'], help='web port')
-def main(port):
-    Logger.set_logger('web-{}.log'.format(port))
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '-p', 
+        '--port', 
+        help='Port', 
+        required=False, 
+        default=config['web']['port'],
+    )
+    args = parser.parse_args()
+    Logger.set_logger('web-{}.log'.format(args.port))
     http_server = tornado.httpserver.HTTPServer(Application())
-    http_server.listen(port)
+    http_server.listen(args.port)
     tornado.ioloop.IOLoop.instance().start()
 
 if __name__ == '__main__':
