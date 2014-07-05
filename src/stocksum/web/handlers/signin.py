@@ -17,7 +17,7 @@ class Google_handler(base.Handler, auth.GoogleOAuth2Mixin):
     def get(self):
         if self.get_argument('code', False):
             response = yield self.get_authenticated_user(
-                redirect_uri='http://localhost:8001/signin/google',
+                redirect_uri='{}/signin/google'.format(config['web']['base_url']),
                 code=self.get_argument('code'),
             )
             user = yield httpclient.AsyncHTTPClient().fetch(
