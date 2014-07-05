@@ -63,7 +63,7 @@ class Google_handler(base.Handler, auth.GoogleOAuth2Mixin):
                 self.redirect('/')
         else:
             yield self.authorize_redirect(
-                redirect_uri='http://localhost:8001/signin/google',
+                redirect_uri='{}/signin/google'.format(config['web']['base_url']),
                 client_id=config['web']['google_oauth']['client_id'],
                 scope=['openid', 'profile', 'email'],
                 response_type='code',
