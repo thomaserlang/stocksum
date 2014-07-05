@@ -5,7 +5,9 @@
             {% module portfolios_menu() %}
         </div>
         <div class="col-xs-9">
-            {% module portfolio_buttons(portfolio.id) %}
+            {% if portfolio %}
+                {% module portfolio_buttons(portfolio.id) %}
+            {% end %}
             <p>THE transactions!!!</p>
         </div>
     </div>
